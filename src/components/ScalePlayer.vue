@@ -132,17 +132,14 @@ const generateChords = (tonality: { treble: string[]; bass: string[]; names: str
       case 0:
       case 3:
       case 7:
-        mode = 'j7';
-        break;
       case 4:
-        mode = '7';
+        mode = '';
         break;
       case 6:
-        mode = 'm7b5';
+        mode = 'm°';
         break;
-
       default:
-        mode = 'm7';
+        mode = 'm';
     }
 
     return `"${extendedNames[index]}${mode}" [${chord.join(' ')}]`;
