@@ -162,9 +162,14 @@ const replaceAccidental = (note: string) => {
 };
 
 const getRandomChords = (chords: string[], count: number) => {
-  const shuffled = chords.sort(() => 0.5 - Math.random());
+  const indices = Array.from({ length: chords.length }, (_, i) => i);
+  const shuffledIndices = indices.sort(() => 0.5 - Math.random()).slice(0, count);
+  const randomChords = shuffledIndices.map((index) => chords[index]);
 
-  return shuffled.slice(0, count);
+  const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
+  const randomIndices = shuffledIndices.map((index) => romanNumerals[index]);
+
+  return { randomChords: randomChords.join(' | '), randomIndices: randomIndices.join(' ') };
 };
 
 const renderNotation = async () => {
@@ -185,8 +190,9 @@ const renderNotation = async () => {
 
   if (mode.value === 'jam') {
     chords.pop();
-    abcNotes = getRandomChords(chords, 4).join(' | ');
-    abcNotesText = '';
+    const { randomChords, randomIndices } = getRandomChords(chords, 4);
+    abcNotes = randomChords;
+    abcNotesText = randomIndices;
   }
 
   const abcNotation = `V: T clef=${clef.value}\n${abcMetrum}L:${abcLen}\nK:${tonality.value}\n[V: T]${abcNotes}|\nw: ${abcNotesText}`;
