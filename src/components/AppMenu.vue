@@ -14,14 +14,14 @@
         <ion-note>
           <p>
             Are you a bass player?<br />Grab Your Key is a simple tool inspired by Scott Devine's awesome post
-            <a href="https://scottsbasslessons.com/blog/practice-this-every-day">„Practice THIS Every Day“</a>.
+            <a href="https://scottsbasslessons.com/blog/practice-this-every-day">Practice THIS Every Day</a>.
           </p>
           <p>
             To get started, choose a key in the circle of fifths and play the scale in a vertical and horizontal way.
             Next, play the scale harmonized in triads. Then play along with a random chord progressions: Turn on a
-            <a href="https://groovetrainer.scottsbasslessons.com">rhythm machine</a> and play and start jamming. Create
-            simple bass lines by first using just root notes, and then try adding the octave, 3rd and 5th notes of the
-            chords. Another way to practice is to play arpeggios of the chords.
+            <a href="https://groovetrainer.scottsbasslessons.com">rhythm machine</a> and start jamming. Create simple
+            bass lines by first using just root notes, and then try adding the octave, 3rd and 5th notes of the chords.
+            Another way to practice is to play arpeggios of the chords.
           </p>
         </ion-note>
 
@@ -36,7 +36,7 @@
             slot="start"
             :icon="logoGithub"
           ></ion-icon>
-          <ion-label>maik@mettbox.de</ion-label>
+          <ion-label>Maik Mettenheimer<br />maik@mettbox.de</ion-label>
         </ion-item>
       </ion-list>
     </ion-content>
@@ -60,6 +60,8 @@ ion-menu {
 
     a {
       color: var(--ion-color-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--ion-color-primary);
     }
 
     b {

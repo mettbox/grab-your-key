@@ -699,7 +699,7 @@ watch(selected, (newSelection: string) => {
 
   text {
     font-family: 'music';
-    font-weight: bold;
+    font-weight: normal;
     fill: var(--circle-text-color);
     user-select: none;
     pointer-events: none;

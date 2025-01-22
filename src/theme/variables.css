@@ -1,15 +1,6 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
 
-/*
-  rgb(60,70,80), #3c4650
-  rgb(41,46,52), #292e34
-  rgb(45,51,58), #2d333a
-
-  rgb(103,142,183), #678eb7
-  rgb(75,98,123), #4b627b
-  */
-
 :root.ios {
   --ion-background-color: #181c20;
   --ion-background-color-rgb: 24, 28, 32;
@@ -88,7 +79,6 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-dark-shade: #292929;
   --ion-color-dark-tint: #444444;
 
-  /* font-synthesis: none; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
