@@ -115,7 +115,6 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
 
 const notationElem = ref(null);
 const audioElem = ref(null);
-
 const tonality = ref(props.tonality);
 const clef = ref(props.clef);
 const mode = ref(props.mode);
@@ -180,7 +179,6 @@ const renderNotation = async () => {
   const chords: string[] = generateChords(scale, clef.value);
 
   const abcMetrum = mode.value !== 'jam' ? '' : 'M: 1/4\n';
-
   const abcLen = mode.value !== 'jam' ? '1/4' : '1';
 
   let abcNotes = mode.value === 'scales' ? scale[clef.value].join(' ') : chords.join(' ');
@@ -202,7 +200,7 @@ const renderNotation = async () => {
     paddingright: 0,
     selectionColor: '#cb4b16',
     jazzchords: true,
-    staffwidth: 400,
+    staffwidth: window.innerWidth < 512 ? 320 : 400,
   });
 
   if (!abcjs.synth.supportsAudio() || !audioElem.value) {
@@ -216,6 +214,7 @@ const renderNotation = async () => {
     displayProgress: false,
     displayWarp: false,
   };
+
   const synthControl = new abcjs.synth.SynthController();
   synthControl.load(audioElem.value, null, controlOptions);
   synthControl.disable(true);
@@ -251,6 +250,7 @@ watch(
 
 onMounted(() => {
   renderNotation();
+  window.addEventListener('resize', renderNotation);
 });
 </script>
 
