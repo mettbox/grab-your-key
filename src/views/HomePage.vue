@@ -19,6 +19,10 @@
             <ion-label>𝄞</ion-label>
           </ion-segment-button>
         </ion-segment>
+        <ion-buttons
+          slot="end"
+          style="width: 41px"
+        />
       </ion-toolbar>
     </ion-header>
 

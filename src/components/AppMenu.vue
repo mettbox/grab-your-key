@@ -18,10 +18,9 @@
           </p>
           <p>
             To get started, choose a key in the circle of fifths and play the scale in a vertical and horizontal way.
-            Next, play the scale harmonized in triads. Then play along with a random chord progressions: Turn on a
+            Next, play the scale harmonized in triads. Then play along with a random chord progression: Turn on a
             <a href="https://groovetrainer.scottsbasslessons.com">rhythm machine</a> and start jamming. Create simple
-            bass lines by first using just root notes, and then try adding the octave, 3rd and 5th notes of the chords.
-            Another way to practice is to play arpeggios of the chords.
+            bass lines by first using just root notes, and then try adding the octave, 3rd and 5th of the chords.
           </p>
         </ion-note>
 

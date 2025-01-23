@@ -1,6 +1,6 @@
 <template>
   <div class="scale-player">
-    <div>
+    <div class="notation-container">
       <div
         ref="notationElem"
         :class="mode"
@@ -191,7 +191,7 @@ const renderNotation = async () => {
   if (mode.value === 'jam') {
     chords.pop();
     const { randomChords, randomIndices } = getRandomChords(chords, 4);
-    abcNotes = randomChords;
+    abcNotes = `${randomChords} :|`;
     abcNotesText = randomIndices;
   }
 
@@ -293,6 +293,12 @@ onMounted(() => {
 
 .abcjs-inline-audio {
   background: transparent;
+  padding: 6px 0 6px 7px;
+  margin: 20px 0;
+  background-color: var(--ion-item-background) !important;
+  border-radius: 10px;
+  width: 42px;
+  height: 34px;
 
   .abcjs-midi-loop.abcjs-pushed {
     border: 0 none;
@@ -310,10 +316,19 @@ onMounted(() => {
       width: 100%;
       height: 100%;
     }
+
     g {
-      fill: rgb(60, 70, 80);
-      stroke: rgb(60, 70, 80);
+      fill: var(--ion-text-color);
+      stroke: var(--ion-text-color);
     }
+  }
+}
+
+@media (max-width: 913px) {
+  .notation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>

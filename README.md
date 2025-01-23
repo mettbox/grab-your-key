@@ -15,3 +15,10 @@ npm run dev
 
 - https://www.abcjs.net
 - https://ionicframework.com
+
+
+## Improvments
+
+- Fix circle at tonica
+- dark/light mode support
+- add a drum machine
