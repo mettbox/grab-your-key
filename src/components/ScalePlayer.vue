@@ -180,7 +180,7 @@ const renderNotation = async () => {
   const scale: any = majorScales[tonality.value];
   const chords: string[] = generateChords(scale, clef.value);
 
-  const abcMetrum = mode.value !== 'jam' ? '' : 'M: 1/4\n';
+  const abcMetrum = mode.value !== 'jam' ? '' : 'M: 4/4\n';
   const abcLen = mode.value !== 'jam' ? '1/4' : '1';
 
   let abcNotes = mode.value === 'scales' ? scale[clef.value].join(' ') : chords.join(' ');
@@ -210,21 +210,21 @@ const renderNotation = async () => {
     return;
   }
 
-  const controlOptions = {
+  const synthControl = new abcjs.synth.SynthController();
+
+  synthControl.load(audioElem.value, null, {
     displayPlay: true,
     displayLoop: false,
     displayRestart: false,
     displayProgress: false,
     displayWarp: false,
-  };
+  });
 
-  const synthControl = new abcjs.synth.SynthController();
-  synthControl.load(audioElem.value, null, controlOptions);
   synthControl.disable(true);
 
   const midiBuffer = new abcjs.synth.CreateSynth();
   await midiBuffer.init({ visualObj: visualObj[0], options: {} });
-  await synthControl.setTune(visualObj[0], true);
+  await synthControl.setTune(visualObj[0], false, { chordsOff: true });
 };
 
 watch(
@@ -280,14 +280,6 @@ onMounted(() => {
     font-family: 'music';
     font-weight: normal;
     fill-opacity: 0.7;
-  }
-
-  .jam {
-    /* I have no idea how to turn off the rhythm of the chords.
-      With Metrom of 1/4 it is gone. let's fade it out. */
-    .abcjs-time-signature {
-      display: none;
-    }
   }
 }
 

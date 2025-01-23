@@ -22,3 +22,5 @@ npm run dev
 - Fix circle at tonica
 - dark/light mode support
 - add a drum machine
+- add standard-version
+- add offline support
