@@ -11,6 +11,7 @@
         <ion-segment
           :value="clef"
           @ionChange="updateClef"
+          :disabled="isPlaying"
         >
           <ion-segment-button value="bass">
             <ion-label>𝄢</ion-label>
@@ -35,6 +36,7 @@
               :tonality="tonality"
               @update:tonality="updateTonality"
               style="width: 440px"
+              :style="{ 'pointer-events': isPlaying ? 'none' : 'auto' }"
             />
           </ion-col>
           <ion-col class="ion-padding">
@@ -44,6 +46,7 @@
               :clef="clef"
               :mode="mode"
               style="width: 440px"
+              @is-playing="isPlaying = $event"
             />
           </ion-col>
         </ion-row>
@@ -58,6 +61,7 @@
         <ion-segment
           :value="mode"
           @ionChange="updateMode"
+          :disabled="isPlaying"
         >
           <ion-segment-button value="scales">
             <ion-label>Scale</ion-label>
@@ -97,6 +101,7 @@ import { ref } from 'vue';
 const tonality = ref('C');
 const clef = ref('bass');
 const mode = ref('scales');
+const isPlaying = ref(false);
 
 const updateTonality = (value: string) => {
   tonality.value = value;

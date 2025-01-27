@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { ref, watch, PropType, onMounted } from 'vue';
-import abcjs from 'abcjs';
+import abcjs, { SynthObjectController } from 'abcjs';
 import 'abcjs/abcjs-audio.css';
 
 const props = defineProps({
@@ -108,11 +108,14 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
   },
 };
 
+const emit = defineEmits(['is-playing']);
+
 const notationElem = ref(null);
 const audioElem = ref(null);
 const tonality = ref(props.tonality);
 const clef = ref(props.clef);
 const mode = ref(props.mode);
+const synthControl = ref<SynthObjectController>();
 
 const generateChords = (tonality: { treble: string[]; bass: string[]; names: string[] }, clef: string) => {
   const scale: string[] = tonality[clef as keyof typeof tonality];
@@ -205,9 +208,20 @@ const renderNotation = async () => {
     return;
   }
 
-  const synthControl = new abcjs.synth.SynthController();
+  synthControl.value = new abcjs.synth.SynthController();
 
-  synthControl.load(audioElem.value, null, {
+  const createCursorControl = () => {
+    return {
+      onStart: () => {
+        emit('is-playing', true);
+      },
+      onFinished: () => {
+        emit('is-playing', false);
+      },
+    };
+  };
+
+  synthControl.value.load(audioElem.value, createCursorControl(), {
     displayPlay: true,
     displayLoop: false,
     displayRestart: false,
@@ -215,11 +229,11 @@ const renderNotation = async () => {
     displayWarp: false,
   });
 
-  synthControl.disable(true);
+  synthControl.value.disable(true);
 
   const midiBuffer = new abcjs.synth.CreateSynth();
   await midiBuffer.init({ visualObj: visualObj[0], options: {} });
-  await synthControl.setTune(visualObj[0], false, { chordsOff: true });
+  await synthControl.value.setTune(visualObj[0], false, { chordsOff: true });
 };
 
 watch(
