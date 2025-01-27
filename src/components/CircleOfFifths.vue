@@ -142,7 +142,6 @@
                   >
                     {{ getNoteName(5) }}
                   </tspan>
-                  <!-- <tspan x="878.083" y="1277.287" font-size="71">{{ getAccidental(5) }}</tspan> -->
                 </text>
                 <!-- 7 - F♯ / G♭-->
                 <text
@@ -155,7 +154,6 @@
                   >
                     {{ getNoteName(6) }}
                   </tspan>
-                  <!-- <tspan x="561.267" y="1249.387" font-size="71">{{ getAccidental(6) }}</tspan> -->
                 </text>
                 <!-- 8 - D♭ / C♯ /-->
                 <text
@@ -168,7 +166,6 @@
                   >
                     {{ getNoteName(7) }}
                   </tspan>
-                  <!-- <tspan x="312.56" y="1099.257" font-size="71">{{ getAccidental(7) }}</tspan> -->
                 </text>
                 <!-- 9 - A♭ / G♯ /-->
                 <text
@@ -181,7 +178,6 @@
                   >
                     {{ getNoteName(8) }}
                   </tspan>
-                  <!-- <tspan x="168.388" y="852.565" font-size="71">{{ getAccidental(8) }}</tspan> -->
                 </text>
                 <!-- 10 - E♭ / D♯ /-->
                 <text
@@ -194,7 +190,6 @@
                   >
                     {{ getNoteName(9) }}
                   </tspan>
-                  <!-- <tspan x="166.224" y="564.437" font-size="71">{{ getAccidental(9) }}</tspan> -->
                 </text>
                 <!-- 11 - B♭ / A♯ /-->
                 <text
@@ -207,7 +202,6 @@
                   >
                     {{ getNoteName(10) }}
                   </tspan>
-                  <!-- <tspan x="318.95" y="302.316" font-size="71">{{ getAccidental(10) }}</tspan> -->
                 </text>
                 <!-- 12 - F /-->
                 <text
@@ -351,7 +345,6 @@
                   >
                     {{ getMinorNoteName(7) }}
                   </tspan>
-                  <!-- <tspan x="796.039" y="553.659" font-size="61">{{ getAccidental("F#") }}</tspan> -->
                 </text>
                 <text
                   transform="rotate(135 703.1 710.897)"
@@ -363,7 +356,6 @@
                   >
                     {{ getMinorNoteName(8) }}
                   </tspan>
-                  <!-- <tspan x="702.91" y="721.397" font-size="61">{{ getAccidental("C#") }}</tspan> -->
                 </text>
                 <text
                   transform="rotate(165 542.001 813.705)"
@@ -375,7 +367,6 @@
                   >
                     {{ getMinorNoteName(9) }}
                   </tspan>
-                  <!-- <tspan x="546.551" y="824.205" font-size="61">#</tspan> -->
                 </text>
                 <text
                   transform="rotate(-165 355.07 804.773)"
@@ -387,7 +378,6 @@
                   >
                     {{ getMinorNoteName(10) }}
                   </tspan>
-                  <!-- <tspan x="360.106" y="815.273" font-size="61">{{ getAccidental("D#") }}</tspan> -->
                 </text>
                 <text
                   transform="rotate(-135 181.799 697.518)"
@@ -399,7 +389,6 @@
                   >
                     {{ getMinorNoteName(11) }}
                   </tspan>
-                  <!-- <tspan x="187.529" y="708.018" font-size="61">{{ getAccidental("Bb") }}</tspan> -->
                 </text>
               </g>
             </g>
@@ -619,7 +608,7 @@ const circles: Record<string, any> = {
   },
 };
 
-const withEnharmonicToggle = ['F#', 'Gb', 'C#', 'Db', 'G#', 'Ab'];
+const withEnharmonicToggle = ['F#', 'Gb', 'C#', 'Db'];
 
 const emit = defineEmits(['update:tonality']);
 
@@ -637,10 +626,6 @@ const toggleAccidentals = () => {
     selected.value = 'Db';
   } else if (selected.value === 'Db') {
     selected.value = 'C#';
-  } else if (selected.value === 'G#') {
-    selected.value = 'Ab';
-  } else if (selected.value === 'Ab') {
-    selected.value = 'G#';
   }
 };
 
@@ -668,10 +653,10 @@ const getMinorNoteName = (note: number) => {
 };
 
 watch(selected, (newSelection: string) => {
-  emit('update:tonality', newSelection);
   circle.value = circles[newSelection];
   rotation.value = circle.value.rotation;
   showEnharmonicToggle.value = withEnharmonicToggle.includes(newSelection);
+  emit('update:tonality', newSelection);
 });
 </script>
 

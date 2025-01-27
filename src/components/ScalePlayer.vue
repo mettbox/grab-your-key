@@ -86,11 +86,6 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
     bass: ['G,,', 'A,,', 'B,,', 'C,', 'D,', 'E,', 'F,', 'G,'],
     names: ['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G'],
   },
-  'G#': {
-    treble: ['G', 'A', 'B', "C'", "D'", "E'", "F'", "G'"],
-    bass: ['G,,', 'A,,', 'B,,', 'C,', 'D,', 'E,', 'F,', 'G,'],
-    names: ['G#', 'A#', 'B#', 'C#', 'D#', 'E#', 'F##', 'G#'],
-  },
   Ab: {
     treble: ['A', 'B', "C'", "D'", "E'", "F'", "G'", "A'"],
     bass: ['A,,', 'B,,', 'C,', 'D,', 'E,', 'F,', 'G,', 'A,'],
