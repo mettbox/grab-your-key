@@ -2,7 +2,7 @@
   "name": "grab-your-key",
   "description": "Circle of fifths ionic vue app using abcjs for music notation",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
