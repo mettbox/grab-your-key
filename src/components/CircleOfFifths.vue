@@ -71,7 +71,6 @@
                   d="M357.524 95.812L477.03 302.805a455.466 455.466 0 01217.47-58.272V5.522a694.454 694.454 0 00-336.976 90.29z"
                 />
 
-                <!-- 1 - C -->
                 <text
                   transform="rotate(15 846.135 157.057)"
                   font-size="111"
@@ -80,10 +79,10 @@
                     x="813.002"
                     y="185.557"
                   >
+                    <!-- 1 - C -->
                     {{ getNoteName(0) }}
                   </tspan>
                 </text>
-                <!-- 2 - G -->
                 <text
                   transform="rotate(45 1094.977 291.444)"
                   font-size="111"
@@ -92,10 +91,10 @@
                     x="1055.683"
                     y="319.944"
                   >
+                    <!-- 2 - G -->
                     {{ getNoteName(1) }}
                   </tspan>
                 </text>
-                <!-- 3 - D -->
                 <text
                   transform="rotate(75 1248.077 541.968)"
                   font-size="111"
@@ -104,10 +103,10 @@
                     x="1207.451"
                     y="570.468"
                   >
+                    <!-- 3 - D -->
                     {{ getNoteName(2) }}
                   </tspan>
                 </text>
-                <!-- 4 - A -->
                 <text
                   transform="rotate(105 1248 846.5)"
                   font-size="111"
@@ -116,10 +115,10 @@
                     x="1207.485"
                     y="875"
                   >
+                    <!-- 4 - A -->
                     {{ getNoteName(3) }}
                   </tspan>
                 </text>
-                <!-- 5 - E -->
                 <text
                   transform="rotate(135 1107.138 1104.664)"
                   font-size="111"
@@ -128,10 +127,10 @@
                     x="1071.452"
                     y="1133.164"
                   >
+                    <!-- 5 - E -->
                     {{ getNoteName(4) }}
                   </tspan>
                 </text>
-                <!-- 6 - B -->
                 <text
                   transform="rotate(165 846.545 1238.787)"
                   font-size="111"
@@ -140,10 +139,10 @@
                     x="808.083"
                     y="1267.287"
                   >
+                    <!-- 6 - B -->
                     {{ getNoteName(5) }}
                   </tspan>
                 </text>
-                <!-- 7 - F♯ / G♭-->
                 <text
                   transform="rotate(-165 551.841 1232.887)"
                   font-size="111"
@@ -152,10 +151,10 @@
                     x="492.114"
                     y="1249.387"
                   >
+                    <!-- 7 - F♯ / G♭-->
                     {{ getNoteName(6) }}
                   </tspan>
                 </text>
-                <!-- 8 - D♭ / C♯ /-->
                 <text
                   transform="rotate(-135 295.14 1082.757)"
                   font-size="111"
@@ -164,10 +163,10 @@
                     x="231.308"
                     y="1099.257"
                   >
+                    <!-- 8 - D♭ / C♯ /-->
                     {{ getNoteName(7) }}
                   </tspan>
                 </text>
-                <!-- 9 - A♭ / G♯ /-->
                 <text
                   transform="rotate(-105 151.08 836.065)"
                   font-size="111"
@@ -176,10 +175,10 @@
                     x="87.358"
                     y="852.565"
                   >
+                    <!-- 9 - A♭ / G♯ /-->
                     {{ getNoteName(8) }}
                   </tspan>
                 </text>
-                <!-- 10 - E♭ / D♯ /-->
                 <text
                   transform="rotate(-75 153.744 547.937)"
                   font-size="111"
@@ -188,10 +187,10 @@
                     x="94.851"
                     y="564.437"
                   >
+                    <!-- 10 - E♭ / D♯ /-->
                     {{ getNoteName(9) }}
                   </tspan>
                 </text>
-                <!-- 11 - B♭ / A♯ /-->
                 <text
                   transform="rotate(-45 303.695 285.816)"
                   font-size="111"
@@ -200,10 +199,10 @@
                     x="242.027"
                     y="302.316"
                   >
+                    <!-- 11 - B♭ / A♯ /-->
                     {{ getNoteName(10) }}
                   </tspan>
                 </text>
-                <!-- 12 - F /-->
                 <text
                   transform="rotate(-15 558.837 158.514)"
                   font-size="111"
@@ -212,6 +211,7 @@
                     x="524.26"
                     y="187.014"
                   >
+                    <!-- 12 - F /-->
                     {{ getNoteName(11) }}
                   </tspan>
                 </text>
@@ -266,6 +266,7 @@
                     x="521.769"
                     y="116.637"
                   >
+                    <!-- 1 - Am /-->
                     {{ getMinorNoteName(0) }}
                   </tspan>
                 </text>
@@ -277,7 +278,8 @@
                     x="332.909"
                     y="123.044"
                   >
-                    {{ getMinorNoteName(1) }}
+                    <!-- 11 - Dm /-->
+                    {{ getMinorNoteName(11) }}
                   </tspan>
                 </text>
                 <text
@@ -288,7 +290,8 @@
                     x="161.053"
                     y="202.133"
                   >
-                    {{ getMinorNoteName(2) }}
+                    <!-- 10 - Gm /-->
+                    {{ getMinorNoteName(10) }}
                   </tspan>
                 </text>
                 <text
@@ -299,7 +302,8 @@
                     x="77.047"
                     y="372.986"
                   >
-                    {{ getMinorNoteName(3) }}
+                    <!-- 9 - Gm /-->
+                    {{ getMinorNoteName(9) }}
                   </tspan>
                 </text>
                 <text
@@ -310,7 +314,8 @@
                     x="88.642"
                     y="563.667"
                   >
-                    {{ getMinorNoteName(4) }}
+                    <!-- 8 - Fm /-->
+                    {{ getMinorNoteName(8) }}
                   </tspan>
                 </text>
                 <text
@@ -321,7 +326,8 @@
                     x="692.234"
                     y="210.044"
                   >
-                    {{ getMinorNoteName(5) }}
+                    <!-- 2 - Em /-->
+                    {{ getMinorNoteName(1) }}
                   </tspan>
                 </text>
                 <text
@@ -332,7 +338,8 @@
                     x="775.492"
                     y="377.048"
                   >
-                    {{ getMinorNoteName(6) }}
+                    <!-- 3 - Bm /-->
+                    {{ getMinorNoteName(2) }}
                   </tspan>
                 </text>
                 <text
@@ -343,7 +350,8 @@
                     x="764.854"
                     y="553.659"
                   >
-                    {{ getMinorNoteName(7) }}
+                    <!-- 4 - F♯m /-->
+                    {{ getMinorNoteName(3) }}
                   </tspan>
                 </text>
                 <text
@@ -354,7 +362,8 @@
                     x="665.407"
                     y="721.397"
                   >
-                    {{ getMinorNoteName(8) }}
+                    <!-- 5 - C♯m /-->
+                    {{ getMinorNoteName(4) }}
                   </tspan>
                 </text>
                 <text
@@ -365,7 +374,8 @@
                     x="499.571"
                     y="824.205"
                   >
-                    {{ getMinorNoteName(9) }}
+                    <!-- 6 - G♯m /-->
+                    {{ getMinorNoteName(5) }}
                   </tspan>
                 </text>
                 <text
@@ -376,7 +386,8 @@
                     x="312.154"
                     y="815.273"
                   >
-                    {{ getMinorNoteName(10) }}
+                    <!-- 7 - D♯m /-->
+                    {{ getMinorNoteName(6) }}
                   </tspan>
                 </text>
                 <text
@@ -387,7 +398,8 @@
                     x="141.116"
                     y="708.018"
                   >
-                    {{ getMinorNoteName(11) }}
+                    <!-- 8 - B♭m /-->
+                    {{ getMinorNoteName(7) }}
                   </tspan>
                 </text>
               </g>
