@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { ref, watch, PropType, onMounted } from 'vue';
-import abcjs, { SynthObjectController } from 'abcjs';
+import abcjs, { SynthObjectController, TuneObjectArray } from 'abcjs';
 import 'abcjs/abcjs-audio.css';
 
 const props = defineProps({
@@ -115,6 +115,8 @@ const audioElem = ref(null);
 const tonality = ref(props.tonality);
 const clef = ref(props.clef);
 const mode = ref(props.mode);
+
+const visualObj = ref<TuneObjectArray>();
 const synthControl = ref<SynthObjectController>();
 
 const generateChords = (tonality: { treble: string[]; bass: string[]; names: string[] }, clef: string) => {
@@ -177,34 +179,45 @@ const renderNotation = async () => {
 
   const scale: any = majorScales[tonality.value];
   const chords: string[] = generateChords(scale, clef.value);
-
-  const abcMetrum = mode.value !== 'jam' ? '' : 'M: 4/4\n';
-  const abcLen = mode.value !== 'jam' ? '1/4' : '1';
-
-  let abcNotes = mode.value === 'scales' ? scale[clef.value].join(' ') : chords.join(' ');
-
-  let abcNotesText =
-    mode.value === 'scales' ? scale['names'].map(replaceAccidental).join(' ') : 'I ii iii IV V vi vii° I';
+  const metrum = mode.value !== 'jam' ? null : 'M: 4/4';
+  const len = mode.value !== 'jam' ? '1/4' : '1';
+  const tempo = mode.value !== 'chords' ? null : 'Q: 1/4=80';
+  let notes, text;
 
   if (mode.value === 'jam') {
     chords.pop();
     const { randomChords, randomIndices } = getRandomChords(chords, 4);
-    abcNotes = `${randomChords} :|`;
-    abcNotesText = randomIndices;
+    notes = `${randomChords}`;
+    text = randomIndices;
+  } else {
+    notes = mode.value === 'scales' ? scale[clef.value].join(' ') : chords.join(' ');
+    text = mode.value === 'scales' ? scale['names'].map(replaceAccidental).join(' ') : 'I ii iii IV V vi vii° I';
   }
 
-  const abcNotation = `V: T clef=${clef.value}\n${abcMetrum}L:${abcLen}\nK:${tonality.value}\n[V: T]${abcNotes}|\nw: ${abcNotesText}`;
+  const abcNotation = [
+    `V: T clef=${clef.value}`,
+    `${metrum}`,
+    `${tempo}`,
+    `L: ${len}`,
+    `K: ${tonality.value}`,
+    `[V: T] ${notes}|`,
+    `w: ${text}`,
+  ].join('\n');
 
-  const visualObj = abcjs.renderAbc(notationElem.value, abcNotation, {
+  visualObj.value = abcjs.renderAbc(notationElem.value, abcNotation, {
     add_classes: true,
     paddingleft: 0,
     paddingright: 0,
-    selectionColor: '#cb4b16',
+    selectionColor: 'white',
     jazzchords: true,
     staffwidth: window.innerWidth < 512 ? 320 : 400,
   });
 
-  if (!abcjs.synth.supportsAudio() || !audioElem.value) {
+  await initSynth();
+};
+
+const initSynth = async () => {
+  if (!abcjs.synth.supportsAudio() || !audioElem.value || !visualObj.value) {
     return;
   }
 
@@ -231,9 +244,7 @@ const renderNotation = async () => {
 
   synthControl.value.disable(true);
 
-  const midiBuffer = new abcjs.synth.CreateSynth();
-  await midiBuffer.init({ visualObj: visualObj[0], options: {} });
-  await synthControl.value.setTune(visualObj[0], false, { chordsOff: true });
+  await synthControl.value.setTune(visualObj.value[0], false, { chordsOff: true });
 };
 
 watch(
@@ -289,6 +300,11 @@ onMounted(() => {
     font-family: 'music';
     font-weight: normal;
     fill-opacity: 0.7;
+  }
+
+  /* hide tempo */
+  .abcjs-tempo {
+    display: none;
   }
 }
 
