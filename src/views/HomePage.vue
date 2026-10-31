@@ -63,14 +63,17 @@
           @ionChange="updateMode"
           :disabled="isPlaying"
         >
+          <ion-segment-button value="jam">
+            <ion-label>Jam</ion-label>
+          </ion-segment-button>
           <ion-segment-button value="scales">
             <ion-label>Scale</ion-label>
           </ion-segment-button>
           <ion-segment-button value="chords">
             <ion-label>Chords</ion-label>
           </ion-segment-button>
-          <ion-segment-button value="jam">
-            <ion-label>Jam</ion-label>
+          <ion-segment-button value="ear">
+            <ion-label>Ear</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-toolbar>
@@ -100,7 +103,7 @@ import { ref } from 'vue';
 
 const tonality = ref('C');
 const clef = ref('bass');
-const mode = ref('scales');
+const mode = ref('jam');
 const isPlaying = ref(false);
 
 const updateTonality = (value: string) => {
