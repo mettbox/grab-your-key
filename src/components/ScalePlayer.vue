@@ -63,6 +63,11 @@ const props = defineProps({
     type: String as PropType<string>,
     default: 'scales',
   },
+  // General MIDI program number of the instrument
+  instrument: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const majorScales: Record<string, { treble: string[]; bass: string[]; names: string[] }> = {
@@ -150,6 +155,7 @@ const audioElem = ref(null);
 const tonality = ref(props.tonality);
 const clef = ref(props.clef);
 const mode = ref(props.mode);
+const instrument = ref(props.instrument);
 
 const visualObj = ref<TuneObjectArray>();
 const synthControl = ref<SynthObjectController>();
@@ -273,7 +279,8 @@ const renderNotation = async () => {
   }
 
   const abcNotation = [
-    `V: T clef=${clef.value}`,
+    // Octave clefs (small 8 below the clef) sound an octave lower than written; abcjs applies this to playback too
+    `V: T clef=${clef.value}-8`,
     `${metrum}`,
     `${tempo}`,
     `L: ${len}`,
@@ -305,6 +312,18 @@ const clearHighlight = () => {
 const highlightPlayedElements = (event: NoteTimingEvent) => {
   clearHighlight();
   event.elements?.flat().forEach((element) => element.classList.add(highlightClass));
+};
+
+// abcjs only downloads the samples on the first play, which delays it noticeably.
+// A throwaway synth loads them in the background; abcjs caches them globally, so the real player finds them there.
+const preloadSounds = (audioParams: SynthOptions) => {
+  if (!visualObj.value) {
+    return;
+  }
+
+  new abcjs.synth.CreateSynth()
+    .init({ visualObj: visualObj.value[0], options: audioParams })
+    .catch((error) => console.warn('Preloading sounds failed', error));
 };
 
 const initSynth = async () => {
@@ -365,7 +384,7 @@ const initSynth = async () => {
 
   controller.disable(true);
 
-  const audioParams: SynthOptions = { chordsOff: true };
+  const audioParams: SynthOptions = { chordsOff: true, program: instrument.value };
 
   if (mode.value === 'jam') {
     audioParams.drum = metronomePattern;
@@ -373,6 +392,7 @@ const initSynth = async () => {
   }
 
   await controller.setTune(visualObj.value[0], false, audioParams);
+  preloadSounds(audioParams);
 
   if (mode.value === 'jam') {
     controller.toggleLoop();
@@ -401,6 +421,14 @@ watch(
   (newValue) => {
     mode.value = newValue;
     shuffleExercises();
+    renderNotation();
+  },
+);
+
+watch(
+  () => props.instrument,
+  (newValue) => {
+    instrument.value = newValue;
     renderNotation();
   },
 );
@@ -524,6 +552,8 @@ onUnmounted(() => {
 
 .tempo-range {
   flex: 1;
+  /* on mobile the controls are centered and shrink to their content, which would collapse the range to zero width */
+  min-width: 200px;
   max-width: 260px;
   /* ion-range reserves space above itself for the pin, which pushes it off center next to the play button */
   padding-top: 0;

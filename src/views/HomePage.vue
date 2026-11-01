@@ -20,10 +20,38 @@
             <ion-label>𝄞</ion-label>
           </ion-segment-button>
         </ion-segment>
-        <ion-buttons
-          slot="end"
-          style="width: 41px"
-        />
+        <ion-buttons slot="end">
+          <ion-button
+            color="secondary"
+            aria-label="Choose sound"
+            :disabled="isPlaying"
+            @click="openInstrumentSelect"
+          >
+            <span
+              slot="icon-only"
+              class="music-glyph"
+              >♫</span
+            >
+          </ion-button>
+          <!-- hidden, only its modal is used, opened by the button above -->
+          <ion-select
+            ref="instrumentSelect"
+            class="instrument-select"
+            :value="instrument"
+            @ionChange="updateInstrument"
+            interface="modal"
+            :interface-options="{ header: 'Sound', cssClass: 'sound-modal' }"
+            aria-label="Sound"
+          >
+            <ion-select-option
+              v-for="option in instruments"
+              :key="option.program"
+              :value="option.program"
+            >
+              {{ option.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
@@ -45,6 +73,7 @@
               :tonality="tonality"
               :clef="clef"
               :mode="mode"
+              :instrument="instrument"
               style="width: 440px"
               @is-playing="isPlaying = $event"
             />
@@ -63,14 +92,14 @@
           @ionChange="updateMode"
           :disabled="isPlaying"
         >
-          <ion-segment-button value="jam">
-            <ion-label>Jam</ion-label>
-          </ion-segment-button>
           <ion-segment-button value="scales">
             <ion-label>Scale</ion-label>
           </ion-segment-button>
           <ion-segment-button value="chords">
             <ion-label>Chords</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="jam">
+            <ion-label>Jam</ion-label>
           </ion-segment-button>
           <ion-segment-button value="ear">
             <ion-label>Ear</ion-label>
@@ -83,6 +112,7 @@
 
 <script setup lang="ts">
 import {
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -96,6 +126,8 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
+  IonSelect,
+  IonSelectOption,
 } from '@ionic/vue';
 import CircleOfFifths from '@/components/CircleOfFifths.vue';
 import ScalePlayer from '@/components/ScalePlayer.vue';
@@ -105,6 +137,18 @@ const tonality = ref('C');
 const clef = ref('bass');
 const mode = ref('jam');
 const isPlaying = ref(false);
+
+// General MIDI program numbers
+const instruments = [
+  { program: 0, name: 'Grand Piano' },
+  { program: 1, name: 'Bright Piano' },
+  { program: 4, name: 'Rhodes' },
+  { program: 5, name: 'FM Piano' },
+  { program: 89, name: 'Warm Pad' },
+  { program: 90, name: 'Polysynth' },
+];
+const instrument = ref(0);
+const instrumentSelect = ref<InstanceType<typeof IonSelect>>();
 
 const updateTonality = (value: string) => {
   tonality.value = value;
@@ -117,11 +161,30 @@ const updateMode = (event: CustomEvent) => {
 const updateClef = (event: CustomEvent) => {
   clef.value = event.detail.value;
 };
+
+const openInstrumentSelect = () => {
+  instrumentSelect.value?.$el.open();
+};
+
+const updateInstrument = (event: CustomEvent) => {
+  instrument.value = event.detail.value;
+};
 </script>
 
 <style scoped>
 ion-toolbar {
   --background: transparent;
+}
+
+.music-glyph {
+  font-family: 'music';
+  font-size: 26px;
+  /* the glyph sits low in the font's line box */
+  margin-top: -0.3em;
+}
+
+.instrument-select {
+  display: none;
 }
 
 ion-segment {

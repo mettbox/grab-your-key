@@ -11,16 +11,18 @@ npm install
 npm run dev
 ```
 
+The dev server is also reachable in the local network (see the `Network` URL in the console).
+
+## Deploy
+
+```
+npm run deploy
+```
+
+Builds the app and copies `dist` via scp to `/home/mettbox/public/gyk.mettbox.de` on the SSH host
+`uberspace`.
+
 ## Resources
 
 - https://www.abcjs.net
 - https://ionicframework.com
-
-
-## Improvments
-
-- Fix circle at tonica
-- dark/light mode support
-- add a drum machine
-- add standard-version
-- add offline support

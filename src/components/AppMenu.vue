@@ -21,6 +21,8 @@
             Next, play the scale harmonized in triads. Then play along with a random chord progression: Turn on a
             <a href="https://groovetrainer.scottsbasslessons.com">rhythm machine</a> and start jamming. Create simple
             bass lines by first using just root notes, and then try adding the octave, 3rd and 5th of the chords.
+            Finally, train your ear: listen to four random notes of the scale, find them on your bass and reveal the
+            notes to check yourself.
           </p>
         </ion-note>
 

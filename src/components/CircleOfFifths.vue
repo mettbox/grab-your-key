@@ -405,9 +405,10 @@
               </g>
             </g>
 
+            <!-- translate puts the ring on the same center as the rotating circles -->
             <g
               class="outer-circle"
-              transform="rotate(-15 2123.884 278.116)"
+              transform="translate(-7.72 3.43) rotate(-15 2123.884 278.116)"
             >
               <path
                 class="tonic-segment"

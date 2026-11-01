@@ -87,3 +87,12 @@ http://ionicframework.com/docs/theming/ */
   font-family: 'music';
   src: url('./../assets/fonts/noto-music/noto-music.ttf') format('truetype');
 }
+
+/* ion-select modal of the sound choice, rendered outside of the page so scoped styles can't reach it */
+.sound-modal {
+  ion-toolbar,
+  ion-content,
+  ion-item {
+    --background: var(--ion-item-background);
+  }
+}
