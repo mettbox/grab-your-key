@@ -144,7 +144,6 @@ const instruments = [
   { program: 1, name: 'Bright Piano' },
   { program: 4, name: 'Rhodes' },
   { program: 5, name: 'FM Piano' },
-  { program: 89, name: 'Warm Pad' },
   { program: 90, name: 'Polysynth' },
 ];
 const instrument = ref(0);

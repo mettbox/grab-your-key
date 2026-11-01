@@ -262,7 +262,7 @@ const renderNotation = async () => {
   const len = mode.value === 'jam' ? '1' : '1/4';
   const tempo =
     mode.value === 'chords' || mode.value === 'ear' ? 'Q: 1/4=80' : mode.value === 'jam' ? `Q: 1/4=${bpm.value}` : null;
-  const finalBar = mode.value === 'jam' ? ':|' : '|';
+  const finalBar = mode.value === 'jam' || mode.value === 'ear' ? ':|' : '|';
   let notes, text;
 
   if (mode.value === 'jam') {
