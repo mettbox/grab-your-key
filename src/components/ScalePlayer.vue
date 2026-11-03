@@ -54,6 +54,9 @@ import { IonIcon, IonLabel, IonRange } from '@ionic/vue';
 import { eyeOffOutline, eyeOutline, refreshOutline } from 'ionicons/icons';
 import abcjs, { NoteTimingEvent, SynthObjectController, SynthOptions, TuneObjectArray } from 'abcjs';
 import 'abcjs/abcjs-audio.css';
+import { cacheSoundsForOffline, isInstalledAsApp } from '@/audio/offline-sounds';
+import { soundFontUrl } from '@/audio/soundfont';
+import { instruments } from '@/instruments';
 
 const props = defineProps({
   tonality: {
@@ -280,10 +283,11 @@ const buildAbcNotation = (modeName: string, tonalityName: string, clefName: stri
     notes = jamChords;
     text = jamNumerals;
   } else if (modeName === 'ear') {
-    notes = annotateNotesAbove(
+    // A bar of whole rest after the notes leaves time to sing or play them back before the repeat
+    notes = `${annotateNotesAbove(
       earNoteIndices.value.map((index) => scale[clefName][index]),
       earNoteIndices.value.map((index) => scale['names'][index]),
-    );
+    )} | z4`;
     // Lyrics render inside the note groups, so they stay hidden together with the notes until revealed
     text = earNoteIndices.value.map((index) => scaleIntervals[index]).join(' ');
   } else if (modeName === 'scale') {
@@ -393,6 +397,13 @@ const pinStaffPosition = (frame: NotationFrame | null) => {
   const width = svg.getAttribute('width');
   svg.setAttribute('viewBox', `0 ${staffTop - frame.spaceAboveStaff} ${width} ${frame.height}`);
   svg.setAttribute('height', `${frame.height}`);
+
+  // abcjs fixes the wrapper to the original SVG height and hides its overflow, which would cut off the lyrics
+  const wrapper = svg.parentElement;
+  if (wrapper) {
+    wrapper.style.height = `${frame.height}px`;
+    wrapper.style.overflow = 'visible';
+  }
 };
 
 const highlightClass = 'abcjs-highlight';
@@ -446,10 +457,10 @@ const initSynth = async () => {
     };
   };
 
-  // A looping tune never finishes, so pressing the play button again (which pauses) is the only way to stop.
+  // Pressing the play button again pauses, which should end playback right away and unlock the UI in every mode.
   // abcjs has no pause callback, so wrap pause to treat it as "stop and rewind".
   // setTune also calls pause internally, hence the isPlaying guard.
-  const stopLoop = () => {
+  const stopPlayback = () => {
     if (!isPlaying.value) {
       return;
     }
@@ -460,13 +471,11 @@ const initSynth = async () => {
     setPlaying(false);
   };
 
-  if (mode.value === 'jam') {
-    const pausePlayback = controller.pause;
-    controller.pause = () => {
-      pausePlayback();
-      stopLoop();
-    };
-  }
+  const pausePlayback = controller.pause;
+  controller.pause = () => {
+    pausePlayback();
+    stopPlayback();
+  };
 
   controller.load(audioElem.value, createCursorControl(), {
     displayPlay: true,
@@ -478,7 +487,7 @@ const initSynth = async () => {
 
   controller.disable(true);
 
-  const audioParams: SynthOptions = { chordsOff: true, program: instrument.value };
+  const audioParams: SynthOptions = { chordsOff: true, program: instrument.value, soundFontUrl };
 
   if (mode.value === 'jam') {
     audioParams.drum = metronomePattern;
@@ -529,10 +538,31 @@ watch(
 
 watch(bpm, renderNotation);
 
+// Jam and ear exercises only pick notes from the scale, so scales and chords cover every sample the app can play
+const downloadSoundsForOffline = () => {
+  const tunes = Object.keys(majorScales).flatMap((tonalityName) =>
+    ['treble', 'bass'].flatMap((clefName) =>
+      ['scale', 'chords'].map((modeName) => abcjs.parseOnly(buildAbcNotation(modeName, tonalityName, clefName))[0]),
+    ),
+  );
+  const audioParamsList: SynthOptions[] = instruments.map(({ program }) => ({
+    chordsOff: true,
+    program,
+    drum: metronomePattern,
+    drumBars: 1,
+  }));
+
+  cacheSoundsForOffline(tunes, audioParamsList).catch((error) => console.warn('Caching sounds failed', error));
+};
+
 onMounted(() => {
   shuffleExercises();
   renderNotation();
   window.addEventListener('resize', renderNotation);
+
+  if (isInstalledAsApp()) {
+    downloadSoundsForOffline();
+  }
 });
 
 onUnmounted(() => {

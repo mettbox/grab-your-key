@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { soundCacheName, soundFontUrl } from './src/audio/soundfont';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -61,6 +62,17 @@ export default defineConfig({
       },
       workbox: {
         runtimeCaching: [
+          {
+            // Samples never change, and the offline download adds entries outside workbox, so no expiration here.
+            // Workbox copies matcher functions into the service worker as source text, so a function could not see
+            // soundFontUrl. A RegExp is copied as a literal.
+            urlPattern: new RegExp(`^${soundFontUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: soundCacheName,
+              cacheableResponse: { statuses: [200] },
+            },
+          },
           {
             urlPattern: ({ request }) =>
               request.destination === 'document' ||

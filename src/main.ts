@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import { allowPlaybackInSilentMode } from './audio/audio-session';
 
 import { IonicVue } from '@ionic/vue';
 
@@ -41,6 +42,8 @@ const app = createApp(App)
     rippleEffect: false,
   })
   .use(router);
+
+allowPlaybackInSilentMode();
 
 router.isReady().then(() => {
   app.mount('#app');

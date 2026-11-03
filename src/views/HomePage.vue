@@ -132,21 +132,14 @@ import {
 import CircleOfFifths from '@/components/CircleOfFifths.vue';
 import ScalePlayer from '@/components/ScalePlayer.vue';
 import { ref } from 'vue';
+import { instruments, loadInstrument, saveInstrument } from '@/instruments';
 
 const tonality = ref('C');
 const clef = ref('bass');
 const mode = ref('scale');
 const isPlaying = ref(false);
 
-// General MIDI program numbers
-const instruments = [
-  { program: 0, name: 'Grand Piano' },
-  { program: 1, name: 'Bright Piano' },
-  { program: 4, name: 'Rhodes' },
-  { program: 5, name: 'FM Piano' },
-  { program: 90, name: 'Polysynth' },
-];
-const instrument = ref(0);
+const instrument = ref(loadInstrument());
 const instrumentSelect = ref<InstanceType<typeof IonSelect>>();
 
 const updateTonality = (value: string) => {
@@ -167,6 +160,7 @@ const openInstrumentSelect = () => {
 
 const updateInstrument = (event: CustomEvent) => {
   instrument.value = event.detail.value;
+  saveInstrument(instrument.value);
 };
 </script>
 
