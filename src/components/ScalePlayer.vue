@@ -5,6 +5,11 @@
         ref="notationElem"
         :class="[mode, { 'notes-hidden': mode === 'ear' && !areNotesRevealed }]"
       ></div>
+      <div
+        ref="measureElem"
+        class="notation-measure"
+        aria-hidden="true"
+      ></div>
       <div class="player-controls">
         <div ref="audioElem"></div>
         <button
@@ -61,7 +66,7 @@ const props = defineProps({
   },
   mode: {
     type: String as PropType<string>,
-    default: 'scales',
+    default: 'scale',
   },
   // General MIDI program number of the instrument
   instrument: {
@@ -151,6 +156,7 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
 const emit = defineEmits(['is-playing']);
 
 const notationElem = ref<HTMLElement | null>(null);
+const measureElem = ref<HTMLElement | null>(null);
 const audioElem = ref(null);
 const tonality = ref(props.tonality);
 const clef = ref(props.clef);
@@ -216,6 +222,14 @@ const replaceAccidental = (note: string) => {
 
 const romanNumerals = ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°'];
 
+// Interval of each major scale degree above the tonic
+const scaleIntervals = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+// A leading "^" places the annotation above the staff
+const annotateNotesAbove = (notes: string[], names: string[]) => {
+  return notes.map((note, index) => `"^${replaceAccidental(names[index])}"${note}`).join(' ');
+};
+
 const pickRandomChordIndices = (count: number) => {
   const indices = Array.from({ length: romanNumerals.length }, (_, i) => i);
   return indices.sort(() => 0.5 - Math.random()).slice(0, count);
@@ -251,54 +265,134 @@ const updateBpm = (event: CustomEvent) => {
   bpm.value = event.detail.value;
 };
 
+const buildAbcNotation = (modeName: string, tonalityName: string, clefName: string) => {
+  const scale: any = majorScales[tonalityName];
+  const chords: string[] = generateChords(scale, clefName);
+  const metrum = modeName === 'jam' || modeName === 'ear' ? 'M: 4/4' : null;
+  const len = modeName === 'jam' ? '1' : '1/4';
+  const tempo =
+    modeName === 'chords' || modeName === 'ear' ? 'Q: 1/4=80' : modeName === 'jam' ? `Q: 1/4=${bpm.value}` : null;
+  const finalBar = modeName === 'jam' || modeName === 'ear' ? ':|' : '|';
+  let notes, text;
+
+  if (modeName === 'jam') {
+    const { jamChords, jamNumerals } = formatJamChords(generateJamChords(scale, clefName), jamChordIndices.value);
+    notes = jamChords;
+    text = jamNumerals;
+  } else if (modeName === 'ear') {
+    notes = annotateNotesAbove(
+      earNoteIndices.value.map((index) => scale[clefName][index]),
+      earNoteIndices.value.map((index) => scale['names'][index]),
+    );
+    // Lyrics render inside the note groups, so they stay hidden together with the notes until revealed
+    text = earNoteIndices.value.map((index) => scaleIntervals[index]).join(' ');
+  } else if (modeName === 'scale') {
+    notes = annotateNotesAbove(scale[clefName], scale['names']);
+    text = scaleIntervals.join(' ');
+  } else {
+    notes = chords.join(' ');
+    text = 'I ii iii IV V vi vii° I';
+  }
+
+  return [
+    // The tempo still drives playback, but drawing it would reserve space above the staff
+    '%%printtempo false',
+    // Octave clefs (small 8 below the clef) sound an octave lower than written; abcjs applies this to playback too
+    `V: T clef=${clefName}-8`,
+    `${metrum}`,
+    `${tempo}`,
+    `L: ${len}`,
+    `K: ${tonalityName}`,
+    `[V: T] ${notes}${finalBar}`,
+    text ? `w: ${text}` : null,
+  ].join('\n');
+};
+
+const renderAbcInto = (element: HTMLElement, abcNotation: string) => {
+  return abcjs.renderAbc(element, abcNotation, {
+    add_classes: true,
+    paddingleft: 0,
+    paddingright: 0,
+    paddingtop: 0,
+    paddingbottom: 0,
+    selectionColor: 'white',
+    jazzchords: true,
+    staffwidth: window.innerWidth < 512 ? 320 : 400,
+  });
+};
+
 const renderNotation = async () => {
   if (!notationElem.value) {
     return;
   }
 
-  const scale: any = majorScales[tonality.value];
-  const chords: string[] = generateChords(scale, clef.value);
-  const metrum = mode.value === 'jam' || mode.value === 'ear' ? 'M: 4/4' : null;
-  const len = mode.value === 'jam' ? '1' : '1/4';
-  const tempo =
-    mode.value === 'chords' || mode.value === 'ear' ? 'Q: 1/4=80' : mode.value === 'jam' ? `Q: 1/4=${bpm.value}` : null;
-  const finalBar = mode.value === 'jam' || mode.value === 'ear' ? ':|' : '|';
-  let notes, text;
+  visualObj.value = renderAbcInto(notationElem.value, buildAbcNotation(mode.value, tonality.value, clef.value));
 
-  if (mode.value === 'jam') {
-    const { jamChords, jamNumerals } = formatJamChords(generateJamChords(scale, clef.value), jamChordIndices.value);
-    notes = jamChords;
-    text = jamNumerals;
-  } else if (mode.value === 'ear') {
-    notes = earNoteIndices.value.map((index) => scale[clef.value][index]).join(' ');
-    // Lyrics render inside the note groups, so they stay hidden together with the notes until revealed
-    text = earNoteIndices.value.map((index) => replaceAccidental(scale['names'][index])).join(' ');
-  } else {
-    notes = mode.value === 'scales' ? scale[clef.value].join(' ') : chords.join(' ');
-    text = mode.value === 'scales' ? scale['names'].map(replaceAccidental).join(' ') : 'I ii iii IV V vi vii° I';
+  pinStaffPosition(await getNotationFrame());
+  await initSynth();
+};
+
+// abcjs draws the top staff line as a thin rectangle path, or as a <line> in Firefox
+const readTopStaffLineY = (svg: SVGSVGElement) => {
+  const topLine = svg.querySelector('.abcjs-top-line');
+  if (!topLine) {
+    return null;
+  }
+  if (topLine.tagName === 'line') {
+    return Number(topLine.getAttribute('y1'));
+  }
+  const pathStart = topLine.getAttribute('d')?.match(/M\s*(-?[\d.]+)\s+(-?[\d.]+)/);
+  return pathStart ? Number(pathStart[2]) : null;
+};
+
+type NotationFrame = { spaceAboveStaff: number; height: number };
+
+// The chords notation is the tallest of all modes, and its height varies with tonality and clef.
+// Rendering every combination once yields a frame that fits all of them.
+const measureNotationFrame = async (): Promise<NotationFrame | null> => {
+  // Text size depends on the music font, so measuring before it has loaded would be off
+  await document.fonts.ready;
+
+  const element = measureElem.value;
+  if (!element) {
+    return null;
   }
 
-  const abcNotation = [
-    // Octave clefs (small 8 below the clef) sound an octave lower than written; abcjs applies this to playback too
-    `V: T clef=${clef.value}-8`,
-    `${metrum}`,
-    `${tempo}`,
-    `L: ${len}`,
-    `K: ${tonality.value}`,
-    `[V: T] ${notes}${finalBar}`,
-    text ? `w: ${text}` : null,
-  ].join('\n');
+  let spaceAboveStaff = 0;
+  let spaceBelowStaff = 0;
 
-  visualObj.value = abcjs.renderAbc(notationElem.value, abcNotation, {
-    add_classes: true,
-    paddingleft: 0,
-    paddingright: 0,
-    selectionColor: 'white',
-    jazzchords: true,
-    staffwidth: window.innerWidth < 512 ? 320 : 400,
-  });
+  for (const tonalityName of Object.keys(majorScales)) {
+    for (const clefName of ['treble', 'bass']) {
+      renderAbcInto(element, buildAbcNotation('chords', tonalityName, clefName));
+      const svg = element.querySelector('svg');
+      const staffTop = svg ? readTopStaffLineY(svg) : null;
+      if (!svg || staffTop === null) {
+        continue;
+      }
+      spaceAboveStaff = Math.max(spaceAboveStaff, staffTop);
+      spaceBelowStaff = Math.max(spaceBelowStaff, Number(svg.getAttribute('height')) - staffTop);
+    }
+  }
 
-  await initSynth();
+  element.replaceChildren();
+  return { spaceAboveStaff, height: spaceAboveStaff + spaceBelowStaff };
+};
+
+let notationFrame: Promise<NotationFrame | null> | undefined;
+const getNotationFrame = () => (notationFrame ??= measureNotationFrame());
+
+// abcjs sizes the SVG to its content, so the height and staff position change with every mode.
+// Cropping the SVG to the same frame around the staff keeps the layout steady.
+const pinStaffPosition = (frame: NotationFrame | null) => {
+  const svg = notationElem.value?.querySelector('svg');
+  const staffTop = svg ? readTopStaffLineY(svg) : null;
+  if (!frame || !svg || staffTop === null) {
+    return;
+  }
+
+  const width = svg.getAttribute('width');
+  svg.setAttribute('viewBox', `0 ${staffTop - frame.spaceAboveStaff} ${width} ${frame.height}`);
+  svg.setAttribute('height', `${frame.height}`);
 };
 
 const highlightClass = 'abcjs-highlight';
@@ -453,6 +547,18 @@ onUnmounted(() => {
   width: 100%;
   max-width: 100%;
 
+  /* the SVG is cropped to a fixed frame around the staff, so let unusually high or low notes spill over */
+  svg {
+    overflow: visible;
+  }
+
+  /* renders the notation off screen to measure it, inside .scale-player so the same fonts apply */
+  .notation-measure {
+    position: absolute;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
   .abcjs-staff path,
   .abcjs-bar path,
   .abcjs-clef path,
@@ -481,13 +587,9 @@ onUnmounted(() => {
   }
 
   .notes-hidden .abcjs-note,
-  .notes-hidden .abcjs-stem {
+  .notes-hidden .abcjs-stem,
+  .notes-hidden .abcjs-annotation {
     visibility: hidden;
-  }
-
-  /* hide tempo */
-  .abcjs-tempo {
-    display: none;
   }
 }
 

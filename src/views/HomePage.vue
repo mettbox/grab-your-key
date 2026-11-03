@@ -92,7 +92,7 @@
           @ionChange="updateMode"
           :disabled="isPlaying"
         >
-          <ion-segment-button value="scales">
+          <ion-segment-button value="scale">
             <ion-label>Scale</ion-label>
           </ion-segment-button>
           <ion-segment-button value="chords">
@@ -135,7 +135,7 @@ import { ref } from 'vue';
 
 const tonality = ref('C');
 const clef = ref('bass');
-const mode = ref('jam');
+const mode = ref('scale');
 const isPlaying = ref(false);
 
 // General MIDI program numbers
@@ -179,7 +179,7 @@ ion-toolbar {
   font-family: 'music';
   font-size: 26px;
   /* the glyph sits low in the font's line box */
-  margin-top: -0.3em;
+  margin-top: -0.4em;
 }
 
 .instrument-select {
