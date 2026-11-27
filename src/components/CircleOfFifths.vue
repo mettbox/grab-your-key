@@ -578,6 +578,11 @@ const circles: Record<string, any> = {
     major: ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'F'],
     minor: ['a', 'e', 'b', 'f#', 'c#', 'g#', 'd#', 'a#', 'e#', 'b#', 'fx', 'd'],
   },
+  Cb: {
+    rotation: -150,
+    major: ['C', 'G', 'D', 'A', 'Fb', 'Cb', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'],
+    minor: ['a', 'e', 'b', 'f#', 'db', 'ab', 'eb', 'bb', 'f', 'c', 'g', 'd'],
+  },
   'F#': {
     rotation: -180,
     major: ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#'],
@@ -597,11 +602,6 @@ const circles: Record<string, any> = {
     rotation: 150,
     major: ['C', 'G', 'D', 'A', 'E', 'B', 'Gb', 'Db', 'Ab', 'Eb', 'Bb', 'F'],
     minor: ['a', 'e', 'b', 'f#', 'c#', 'g#', 'eb', 'bb', 'f', 'c', 'g', 'd'],
-  },
-  'G#': {
-    rotation: 120,
-    major: ['B#', 'Fx', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'E#'],
-    minor: ['gx', 'dx', 'b', 'f#', 'c#', 'g#', 'd#', 'a#', 'e#', 'b#', 'fx', 'cx'],
   },
   Ab: {
     rotation: 120,
@@ -625,7 +625,7 @@ const circles: Record<string, any> = {
   },
 };
 
-const withEnharmonicToggle = ['F#', 'Gb', 'C#', 'Db'];
+const withEnharmonicToggle = ['B', 'Cb', 'F#', 'Gb', 'C#', 'Db'];
 
 const emit = defineEmits(['update:tonality']);
 
@@ -635,7 +635,11 @@ const circle = ref(circles['C']);
 const showEnharmonicToggle = ref(false);
 
 const toggleAccidentals = () => {
-  if (selected.value === 'F#') {
+  if (selected.value === 'B') {
+    selected.value = 'Cb';
+  } else if (selected.value === 'Cb') {
+    selected.value = 'B';
+  } else if (selected.value === 'F#') {
     selected.value = 'Gb';
   } else if (selected.value === 'Gb') {
     selected.value = 'F#';

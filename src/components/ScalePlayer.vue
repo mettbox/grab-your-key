@@ -99,11 +99,6 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
     bass: ['D,', 'E,', 'F,', 'G,', 'A,', 'B,', 'C', 'D'],
     names: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#', 'D'],
   },
-  'D#': {
-    treble: ['D', 'E', 'F', 'G', 'A', 'B', "C'", "D'"],
-    bass: ['D,', 'E,', 'F,', 'G,', 'A,', 'B,', 'C', 'D'],
-    names: ['D#', 'E#', 'F##', 'G#', 'A#', 'B#', 'C##', 'D#'],
-  },
   Eb: {
     treble: ['E', 'F', 'G', 'A', 'B', "C'", "D'", "E'"],
     bass: ['E,,', 'F,,', 'G,,', 'A,,', 'B,,', 'C,', 'D,', 'E,'],
@@ -153,6 +148,11 @@ const majorScales: Record<string, { treble: string[]; bass: string[]; names: str
     treble: ['B,', 'C', 'D', 'E', 'F', 'G', 'A', 'B'],
     bass: ['B,,', 'C,', 'D,', 'E,', 'F,', 'G,', 'A,', 'B,'],
     names: ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B'],
+  },
+  Cb: {
+    treble: ['C', 'D', 'E', 'F', 'G', 'A', 'B', "C'"],
+    bass: ['C,', 'D,', 'E,', 'F,', 'G,', 'A,', 'B,', 'C'],
+    names: ['Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb', 'Cb'],
   },
 };
 
